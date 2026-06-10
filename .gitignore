@@ -1,0 +1,17 @@
+# Build artifacts
+*.o
+examples/mlp
+
+# Compiled test binaries (keep the .c sources)
+tests/test_*
+!tests/test_*.c
+
+# Editor / OS cruft
+.DS_Store
+*.swp
+
+# clangd index cache
+.cache/
+
+# NOTE: Stage 8 commits compile_commands.json (from `bear make`)
+# so clangd works for anyone who clones the repo — so it is NOT ignored.
