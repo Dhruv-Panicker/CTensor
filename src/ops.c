@@ -72,3 +72,33 @@ void tensor_scale(Tensor *a, float scalar) {
 		a->data[i] *= scalar; 
 	}
 }
+
+
+Tensor *tensor_matmul(Tensor *a, Tensor *b) {
+	if(a->ndim != 2 || b->ndim!= 2) {
+		fprintf(stderr, "tensor_matmul inputs must be 2D\n"); 
+		exit(1); 
+	} 
+	if(a->shape[1] != b->shape[0]) {
+		fprintf(stderr, "tensor_matmul inner dimensions must match\n"); 
+		exit(1); 
+	} 
+
+	//shape dimensions 
+	int M = a->shape[0]; 
+	int K = a->shape[1]; 
+	int N = b->shape[1]; 
+
+	int out_shape[2] = {M, N}; 
+	
+	//New Tensor 
+	Tensor *c = tensor_zeros(out_shape, a->ndim); 
+
+	//operation 
+	for (int i = 0; i < M; i++)
+		for(int j = 0; j < N; j++)
+			for(int k = 0; k < K; k++)
+				c->data[i*N + j] += a->data[i*K + k] * b->data[k*N + j]; 
+	return c; 
+
+}
