@@ -102,3 +102,118 @@ Tensor *tensor_matmul(Tensor *a, Tensor *b) {
 	return c; 
 
 }
+
+Tensor *tensor_reshape(Tensor *t, int *new_shape, int new_ndim) {
+
+
+	int new_size = 1; 
+	for (int i = 0; i < new_ndim; i++) new_size *= new_shape[i]; 
+	if(t->size != new_size) {
+		fprintf(stderr, "reshape: element count mismatch\n"); 
+		exit(1); 
+	}
+
+	Tensor *c = malloc(sizeof(Tensor));
+	
+	if (c == NULL)  return NULL;
+
+	c->data = t->data;
+	c->shape = malloc(new_ndim * sizeof(int));
+
+	if(c->shape == NULL) {
+		free(c);
+		return NULL;
+	}
+	for(int i = 0; i < new_ndim; i++) {
+		c->shape[i] = new_shape[i]; 
+	}
+
+
+	c->strides = malloc(new_ndim * sizeof(int));
+	if(c->strides == NULL) {
+		free(c->shape);
+		free(c);
+		return NULL;
+	}
+
+
+	//Starting from last index calculate the number of strides neeed to index in tensor 
+	c->strides[new_ndim - 1] = 1;
+	for(int i = new_ndim - 2; i >= 0; i--) {
+		c->strides[i] = c->strides[i + 1] * new_shape[i + 1];
+	}
+
+
+	c->ndim = new_ndim;
+	c->size = t->size;
+	c->owns_data = 0; // view: shares t->data, does not own it
+
+	return c; 
+}
+
+
+Tensor *tensor_transpose(Tensor *t) {
+
+	//check the dimensions match 
+	if(t->ndim != 2){
+		fprintf(stderr, "transpose: mismatching number of dimensions\n"); 
+		exit(1); 
+	} 
+
+	Tensor *c = malloc(sizeof(Tensor)); 
+
+	if (c == NULL) return NULL; 
+	c->data = t->data;
+	c->shape = malloc(2 * sizeof(int)); 
+	if(c->shape == NULL) {
+		free(c); 
+		return NULL; 
+	} 
+	c->strides = malloc(2 * sizeof(int)); 
+	if(c->strides == NULL) {
+		free(c); 
+		return NULL; 
+	} 
+
+	//swap to transpose 
+	c->shape[0] = t->shape[1]; 
+	c->shape[1] = t->shape[0]; 
+
+	c->strides[0] = t->strides[1]; 
+	c->strides[1] = t->strides[0]; 
+
+	c->owns_data = 0; 
+	c->ndim = 2; 
+	c->size = t->size; 
+
+	return c; 
+
+}
+
+
+
+Tensor *tensor_contiguous(Tensor *t) {
+	
+	Tensor *c = tensor_create(t->shape, t->ndim); 
+	if (c == NULL) return NULL; 
+
+	int *indices = malloc(t->ndim * sizeof(int));
+	if (indices == NULL) { tensor_free(c); return NULL; }
+
+
+	for (int flat = 0; flat < t->size; flat++) {
+    		// convert flat → indices[]
+    		int remaining = flat;
+    		for (int d = 0; d < t->ndim; d++) {
+        		int count = 1;
+			//Looking to the right to see dimesnion sizes 
+        		for (int dd = d + 1; dd < t->ndim; dd++) count *= t->shape[dd];
+        		indices[d] = remaining / count;
+        		remaining  = remaining % count;
+    		}
+    		c->data[flat] = tensor_get(t, indices);
+	}
+	free(indices); 
+	return c; 
+
+}

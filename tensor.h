@@ -15,6 +15,7 @@ typedef struct {
 	int *strides; //dynmaically allocated based on ndim 
 	int ndim;
 	int size;
+	int owns_data; // 1 = owns data buffer, 0 = view (shares another tensor's data)
 } Tensor;
 
 //Create a tensor, data is unintialized

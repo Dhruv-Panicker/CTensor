@@ -47,6 +47,7 @@ Tensor *tensor_create(int *shape, int ndim) {
 
 	t->ndim = ndim;
 	t->size = size;
+	t->owns_data = 1; 
 
 	return t;
 }
@@ -56,9 +57,10 @@ void tensor_free(Tensor *t) {
 
 	if (t == NULL) return ; 
 
-	free(t->data); 
 	free(t->shape); 
 	free(t->strides); 
+
+	if(t->owns_data) free(t->data); 
 	free(t); 
 }
 

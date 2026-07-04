@@ -29,16 +29,21 @@ test: $(OBJ)
 	./tests/test_ops
 	$(CC) $(CFLAGS) tests/test_matmul.c $(OBJ) -o tests/test_matmul $(LDFLAGS)
 	./tests/test_matmul
+	$(CC) $(CFLAGS) tests/test_views.c $(OBJ) -o tests/test_views $(LDFLAGS)
+	./tests/test_views
 	$(CC) $(CFLAGS) tests/test_mismatch.c $(OBJ) -o tests/test_mismatch $(LDFLAGS)
 	@echo "== shape mismatch (expect error message + non-zero exit) =="
 	@if ./tests/test_mismatch; then echo "[FAIL] did not exit on mismatch"; exit 1; else echo "[PASS] exited non-zero on shape mismatch"; fi
 	$(CC) $(CFLAGS) tests/test_matmul_mismatch.c $(OBJ) -o tests/test_matmul_mismatch $(LDFLAGS)
 	@echo "== matmul inner-dim mismatch (expect error message + non-zero exit) =="
 	@if ./tests/test_matmul_mismatch; then echo "[FAIL] did not exit on inner-dim mismatch"; exit 1; else echo "[PASS] exited non-zero on inner-dim mismatch"; fi
+	$(CC) $(CFLAGS) tests/test_reshape_mismatch.c $(OBJ) -o tests/test_reshape_mismatch $(LDFLAGS)
+	@echo "== reshape count mismatch (expect error message + non-zero exit) =="
+	@if ./tests/test_reshape_mismatch; then echo "[FAIL] did not exit on reshape mismatch"; exit 1; else echo "[PASS] exited non-zero on reshape mismatch"; fi
 
 # same as test, but with sanitizers on to catch memory errors / UB
 memcheck: CFLAGS += -fsanitize=address,undefined
 memcheck: clean test
 
 clean:
-	rm -f $(OBJ) examples/mlp tests/test_tensor tests/test_ops tests/test_matmul tests/test_mismatch tests/test_matmul_mismatch
+	rm -f $(OBJ) examples/mlp tests/test_tensor tests/test_ops tests/test_matmul tests/test_views tests/test_mismatch tests/test_matmul_mismatch tests/test_reshape_mismatch
