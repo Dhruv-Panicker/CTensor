@@ -31,6 +31,8 @@ test: $(OBJ)
 	./tests/test_matmul
 	$(CC) $(CFLAGS) tests/test_views.c $(OBJ) -o tests/test_views $(LDFLAGS)
 	./tests/test_views
+	$(CC) $(CFLAGS) tests/test_nn.c $(OBJ) -o tests/test_nn $(LDFLAGS)
+	./tests/test_nn
 	$(CC) $(CFLAGS) tests/test_mismatch.c $(OBJ) -o tests/test_mismatch $(LDFLAGS)
 	@echo "== shape mismatch (expect error message + non-zero exit) =="
 	@if ./tests/test_mismatch; then echo "[FAIL] did not exit on mismatch"; exit 1; else echo "[PASS] exited non-zero on shape mismatch"; fi
@@ -46,4 +48,4 @@ memcheck: CFLAGS += -fsanitize=address,undefined
 memcheck: clean test
 
 clean:
-	rm -f $(OBJ) examples/mlp tests/test_tensor tests/test_ops tests/test_matmul tests/test_views tests/test_mismatch tests/test_matmul_mismatch tests/test_reshape_mismatch
+	rm -f $(OBJ) examples/mlp tests/test_tensor tests/test_ops tests/test_matmul tests/test_views tests/test_nn tests/test_mismatch tests/test_matmul_mismatch tests/test_reshape_mismatch

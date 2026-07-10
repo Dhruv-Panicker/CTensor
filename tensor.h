@@ -55,7 +55,7 @@ void tensor_scale(Tensor *a, float scalar);
 
 /*     operations     */ 
 
-//Matrix multiply a tensor both myst be greater than 2D and contiguous
+//Matrix multiply a tensor both must be greater than 2D and contiguous
 Tensor *tensor_matmul(Tensor *a, Tensor *b);
 
 /*     views and layouts  */
