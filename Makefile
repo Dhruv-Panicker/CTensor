@@ -14,8 +14,8 @@ OBJ := $(SRC:.c=.o)
 all: mlp
 
 # link the demo against the compiled library objects
-mlp: examples/mlp.c $(OBJ)
-	$(CC) $(CFLAGS) $^ -o examples/mlp $(LDFLAGS)
+mlp: demo/mlp.c $(OBJ)
+	$(CC) $(CFLAGS) $^ -o demo/mlp $(LDFLAGS)
 
 # pattern rule: any .c -> .o, rebuild if the header changes
 %.o: %.c tensor.h
@@ -48,4 +48,4 @@ memcheck: CFLAGS += -fsanitize=address,undefined
 memcheck: clean test
 
 clean:
-	rm -f $(OBJ) examples/mlp tests/test_tensor tests/test_ops tests/test_matmul tests/test_views tests/test_nn tests/test_mismatch tests/test_matmul_mismatch tests/test_reshape_mismatch
+	rm -f $(OBJ) demo/mlp tests/test_tensor tests/test_ops tests/test_matmul tests/test_views tests/test_nn tests/test_mismatch tests/test_matmul_mismatch tests/test_reshape_mismatch

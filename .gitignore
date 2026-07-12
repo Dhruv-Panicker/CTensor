@@ -1,6 +1,6 @@
 # Build artifacts
 *.o
-examples/mlp
+demo/mlp
 
 # Compiled test binaries (keep the .c sources)
 tests/test_*

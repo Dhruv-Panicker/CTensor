@@ -12,7 +12,7 @@ needed for a neural network forward pass (activations and a linear layer).
 make test       # build and run the test suite
 make memcheck   # run the tests with AddressSanitizer and UBSan
 make clean      # remove build artifacts
-make            # build the demo (examples/mlp)
+make            # build the demo (demo/mlp)
 ```
 
 To check for leaks on macOS:
@@ -28,7 +28,7 @@ tensor.h        public API
 src/tensor.c    create, free, zeros, rand, get, set, print
 src/ops.c       element-wise ops, matmul, reshape, transpose, contiguous
 src/nn.c        relu, sigmoid, softmax, linear layer
-examples/mlp.c  MLP forward pass demo
+demo/mlp.c      MLP forward pass demo
 tests/          test programs
 ```
 
