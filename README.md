@@ -6,11 +6,27 @@ It supports N-dimensional tensors with stride-based indexing, element-wise opera
 matrix multiplication, reshaping and transposing through views, and the core operations
 needed for a neural network forward pass (activations and a linear layer).
 
+## Benchmark
+
+Two matrix multiply implementations with identical output, on a 512x512 multiply
+(compiled with -O2, Apple Silicon):
+
+| Loop order           | Time     |
+|----------------------|----------|
+| ijk (naive)          | 0.1198 s |
+| ikj (cache-friendly) | 0.0072 s |
+| speedup              | 16.75x   |
+
+Same computation, same result. Reordering the inner loops so the innermost one walks
+memory with stride 1 replaces near constant cache misses with sequential access the
+compiler can vectorize. Reproduce with `make bench`.
+
 ## Build
 
 ```bash
 make test       # build and run the test suite
 make memcheck   # run the tests with AddressSanitizer and UBSan
+make bench      # benchmark naive vs cache-friendly matmul
 make clean      # remove build artifacts
 make            # build the demo (demo/mlp)
 ```
@@ -45,17 +61,11 @@ Reshape and transpose are O(1) and share the original data buffer. `contiguous` 
 one operation that copies, used when a non contiguous tensor needs a fresh row-major
 layout.
 
-## Status
+## Features
 
-This is a work in progress, built in stages.
-
-Done:
-* Scaffold (Makefile, header)
 * Core tensor ops (create, free, zeros, rand, get, set, print)
-
-Next:
-* Element-wise ops
-* Matrix multiply (naive vs cache-friendly)
+* Element-wise ops (add, mul, scale)
+* Matrix multiply (naive ijk and cache-friendly ikj)
 * Views (reshape, transpose, contiguous)
-* Neural network ops (activations, linear layer)
-* MLP demo
+* Neural network ops (relu, sigmoid, softmax, linear layer)
+* MLP forward pass demo

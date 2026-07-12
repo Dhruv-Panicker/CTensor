@@ -8,7 +8,7 @@ SRC := src/tensor.c src/ops.c src/nn.c
 OBJ := $(SRC:.c=.o)            
 
 # ---- targets ----
-.PHONY: all test memcheck clean
+.PHONY: all test memcheck bench clean
 
 # default: build the demo
 all: mlp
@@ -47,5 +47,10 @@ test: $(OBJ)
 memcheck: CFLAGS += -fsanitize=address,undefined
 memcheck: clean test
 
+# matmul benchmark, built from source with -O2 so the numbers are meaningful
+bench: demo/benchmark.c $(SRC)
+	$(CC) $(CFLAGS) -O2 $^ -o demo/benchmark $(LDFLAGS)
+	./demo/benchmark
+
 clean:
-	rm -f $(OBJ) demo/mlp tests/test_tensor tests/test_ops tests/test_matmul tests/test_views tests/test_nn tests/test_mismatch tests/test_matmul_mismatch tests/test_reshape_mismatch
+	rm -f $(OBJ) demo/mlp demo/benchmark tests/test_tensor tests/test_ops tests/test_matmul tests/test_views tests/test_nn tests/test_mismatch tests/test_matmul_mismatch tests/test_reshape_mismatch

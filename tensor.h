@@ -58,6 +58,8 @@ void tensor_scale(Tensor *a, float scalar);
 //Matrix multiply a tensor both must be greater than 2D and contiguous
 Tensor *tensor_matmul(Tensor *a, Tensor *b);
 
+//Matrix multipley with optmized memory computation 
+Tensor *tensor_matmul_ikj(Tensor *a, Tensor *b); 
 /*     views and layouts  */
 
 //Reshape the view and returns a new tesnor, caller must free the returning struct but not its data
